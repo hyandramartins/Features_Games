@@ -3,20 +3,18 @@ using UnityEngine;
 
 public class EnemyKeepDistance : EnemyMoviment
 {
-    public float fleeDistance = 4f;
-    public float safeDistance = 6f;
-    public float fleeSpeedMultiplier = 1.5f;
 
+    public float fleeSpeedMultiplier = 1.5f;
     private bool retreating;
 
     public override void Move(Transform target)
     {
-        Vector2 directionToPlayer = target.position - transform.position;
+        Vector2 directionToPlayer = (target.position - transform.position).normalized;
         float distance = Vector2.Distance(transform.position, target.position);
 
         //FlipVerify(directionToPlayer.x);
 
-        if(!retreating && distance < fleeDistance)
+        if(!retreating && distance < minDistance)
         {
             retreating = true;
         }
@@ -28,8 +26,7 @@ public class EnemyKeepDistance : EnemyMoviment
         if(retreating)
         {
             FlipVerify(-directionToPlayer.x);
-            Vector2 fleeDirection = -directionToPlayer.normalized;
-            rigidbody2DEnemy.linearVelocity = fleeDirection * (speed * fleeSpeedMultiplier);
+            rigidbody2DEnemy.linearVelocity = -directionToPlayer * (speed * fleeSpeedMultiplier);
             SetWalking(true);
             SetIdle(false);
         }
