@@ -1,13 +1,16 @@
 using System.Collections;
+using Unity.Mathematics;
 using Unity.VisualScripting;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
     public float speed;
-    public Animator animator;
-
+    
+    private Animator animator;
     private Rigidbody2D rigidbody2DPlayer;
     private Vector2 input;
     private bool isKnockback;
@@ -15,6 +18,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rigidbody2DPlayer = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     void FixedUpdate()
@@ -46,11 +50,13 @@ public class PlayerController : MonoBehaviour
     {
         isKnockback = true;
 
+        animator.SetTrigger("damage");
+
         Vector2 direction = (transform.position - dealDamage.position);
         rigidbody2DPlayer.linearVelocity = direction * knockbackForce;
 
         yield return new WaitForSeconds(knockbackDuration);
-
+        
         rigidbody2DPlayer.linearVelocity = Vector2.zero;
         isKnockback = false;
     }
